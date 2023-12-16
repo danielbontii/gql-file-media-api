@@ -1,0 +1,11 @@
+spring:
+  graphql:
+    graphiql:
+      enabled: true
+
+aws:
+  accessKey: ${AWS_ACCESS_KEY}
+  secretKey: ${AWS_SECRET_KEY}
+  region: ${AWS_REGION}
+  s3:
+    bucketName: ${AWS_BUCKET_NAME}
