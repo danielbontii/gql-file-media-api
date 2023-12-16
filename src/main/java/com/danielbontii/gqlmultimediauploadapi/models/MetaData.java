@@ -1,15 +1,24 @@
 package com.danielbontii.gqlmultimediauploadapi.models;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
+import java.util.UUID;
+
+@Getter
+@Setter
+@Entity
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "metadatas")
 public class MetaData {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
     private String key;
     private String value;
+
 }

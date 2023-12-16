@@ -1,7 +1,7 @@
 package com.danielbontii.gqlmultimediauploadapi.controllers;
 
 import com.amazonaws.HttpMethod;
-import com.danielbontii.gqlmultimediauploadapi.models.Asset;
+import com.danielbontii.gqlmultimediauploadapi.models.AssetInput;
 import com.danielbontii.gqlmultimediauploadapi.models.AssetResponse;
 import com.danielbontii.gqlmultimediauploadapi.services.impl.UploadService;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +17,8 @@ public class UploadController {
     private final UploadService uploadService;
 
     @MutationMapping
-    public AssetResponse getPresignedUrl(@Argument(name = "asset") Asset asset) {
-        return uploadService.generatePreSignedUrl(asset, HttpMethod.PUT);
+    public AssetResponse getPresignedUrl(@Argument(name = "asset") AssetInput assetInput) {
+        return uploadService.generatePreSignedUrl(assetInput, HttpMethod.PUT);
     }
 
 }
