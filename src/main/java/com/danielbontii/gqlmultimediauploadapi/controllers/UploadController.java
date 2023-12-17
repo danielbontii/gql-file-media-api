@@ -9,6 +9,8 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.stereotype.Controller;
 
+import java.util.List;
+
 
 @Controller
 @RequiredArgsConstructor
@@ -17,8 +19,8 @@ public class UploadController {
     private final UploadService uploadService;
 
     @MutationMapping
-    public AssetResponse getPresignedUrl(@Argument(name = "asset") AssetInput assetInput) {
-        return uploadService.generatePreSignedUrl(assetInput, HttpMethod.PUT);
+    public List<AssetResponse> getPresignedUrl(@Argument(name = "asset") List<AssetInput> assetInputs) {
+        return uploadService.generatePreSignedUrl(assetInputs, HttpMethod.PUT);
     }
 
 }

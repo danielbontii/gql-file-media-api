@@ -19,5 +19,5 @@ type Query {
 }
 
 type Mutation {
-    getPresignedUrl(asset: Asset!) : AssetResponse!
+    getPresignedUrl(asset: [Asset!]) : [AssetResponse!]
 }

@@ -17,8 +17,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -34,37 +36,47 @@ public class UploadServiceImpl implements UploadService {
     private String s3BucketName;
 
     @Transactional
-    public AssetResponse generatePreSignedUrl(AssetInput assetInput, HttpMethod httpMethod) {
+    public List<AssetResponse> generatePreSignedUrl(List<AssetInput> assetInputs, HttpMethod httpMethod) {
+
+        //TODO: Publish this into a queue
+
+        List<AssetResponse> responses = new ArrayList<>();
+
+        assetInputs.forEach(assetInput -> {
 
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        calendar.add(Calendar.MINUTE, 5);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.MINUTE, 5);
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest =
-                new GeneratePresignedUrlRequest(s3BucketName, assetInput.getName())
-                        .withExpiration(calendar.getTime())
-                        .withMethod(httpMethod);
+            GeneratePresignedUrlRequest generatePresignedUrlRequest =
+                    new GeneratePresignedUrlRequest(s3BucketName, assetInput.getName())
+                            .withExpiration(calendar.getTime())
+                            .withMethod(httpMethod);
 
-        //Todo: Investigate headers changing presignedUrlRequest Signature
+            //Todo: Investigate headers changing presignedUrlRequest Signature
 //        assetInput.getMetadata().forEach(data ->
 //                generatePresignedUrlRequest.putCustomRequestHeader("x-amz-meta-"+data.getKey(), data.getValue()));
 
-        URL presignedUrl = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
+            URL presignedUrl = amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
 
 
-        Asset assetToSave = new Asset();
-        assetToSave.setName(assetInput.getName());
-        assetToSave.setExtension(assetInput.getExtension());
-        assetToSave.setMetaData(assetInput.getMetadata());
+            Asset assetToSave = new Asset();
+            assetToSave.setName(assetInput.getName());
+            assetToSave.setExtension(assetInput.getExtension());
+            assetToSave.setMetaData(assetInput.getMetadata());
 
 
-        Asset savedAsset = assetRepository.save(assetToSave);
+            Asset savedAsset = assetRepository.save(assetToSave);
 
-        AssetResponse response = objectMapper.convertValue(savedAsset, AssetResponse.class);
-        response.setPresignedUrl(presignedUrl.toString());
+            AssetResponse response = objectMapper.convertValue(savedAsset, AssetResponse.class);
+            response.setPresignedUrl(presignedUrl.toString());
 
-        return response;
+            responses.add(response);
+
+        });
+
+        return responses;
 
     }
 }
