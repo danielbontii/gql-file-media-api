@@ -1,0 +1,23 @@
+input Metadata  {
+    key: String
+    value: String
+}
+
+type AssetResponse {
+    id: ID
+    presignedUrl: String!
+}
+
+input Asset {
+    name: String!
+    extension: String!
+    metadata: [Metadata]
+}
+
+type Query {
+    assetByName(assetName: String) : String
+}
+
+type Mutation {
+    getPresignedUrl(asset: [Asset!]) : [AssetResponse!]
+}
